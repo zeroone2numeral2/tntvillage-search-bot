@@ -1,0 +1,6 @@
+python-telegram-bot
+simplesqlitewrap
+requests
+toml
+pyyaml
+beautifulsoup4

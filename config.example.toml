@@ -1,0 +1,19 @@
+[telegram]
+token = "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11" # token del bot
+chat_id = -1001141547703 # chat in cui inviare il file json dell'ultimo export
+admin_id = 1234567 # id dell'utente che potrà utilizzare comandi speciali, se ce ne saranno
+
+[log]
+filename = "tntreleasesbot.log" # nome del file di log
+silence_ptb_logger = true
+
+[database]
+filename = "tntdb.sqlite" # nome del databse sqlite
+
+[tntvillage]
+update_frequency = 259200 # ogni quanti secondi aggiornare la lista (259200: 72 ore)
+first_job_after = 259200 # esegui il primo fetch dopo 72 ore dall'avvio del processo
+limit = 0 # richiedi solo le prime n pagine delle release, 0 per richiederle tutte
+
+[other]
+source_code = ""
