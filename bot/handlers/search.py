@@ -13,9 +13,11 @@ logger = logging.getLogger(__name__)
 
 MAX_RESULT_ITEMS = 40
 
-TORRENT_ROW = '- {0} [<a href="https://t.me/{1}?start={2}">magnet</a>]'
+TORRENT_ROW = """- {title} [{leech}/{seed}]\
+[<a href="https://t.me/{bot_username}?start={id}">magnet</a>][<a href="{torrent_url}">torrent</a>]"""
 
 BOTTOM_TEXT = """<i>{0} risultati di {1}</i>
+I numeri tra parentesi accanto al titolo del torrent corrispondono a leech/seed
 <b>Torrent nel database</b>: {2:,}
 <b>Ultimo aggiornamento lista</b>: {3}"""
 
@@ -44,7 +46,18 @@ def on_search_query(bot, update, user_data):
         return
 
     # massimo 100 entities in un msg
-    strings_list = [TORRENT_ROW.format(html_escape(truncate(t.title)), bot.username, t.id) for t in torrents_list[:MAX_RESULT_ITEMS]]
+    strings_list = list()
+    for t in torrents_list[:MAX_RESULT_ITEMS]:
+        string = TORRENT_ROW.format(
+            title=html_escape(truncate(t.title)),
+            bot_username=bot.username,
+            id=t.id,
+            torrent_url=t.torrent_download_url,
+            leech='-' if t.leech is None else t.leech,
+            seed='-' if t.seed is None else t.seed
+        )
+        strings_list.append(string)
+
     # salva un dizionario di {id: magnet} per restituire il magnet quando l'utente aprirà il deeplink (senza eseguire
     # una nuova query al db)
     user_data['query_result'] = {t.id: t for t in torrents_list}

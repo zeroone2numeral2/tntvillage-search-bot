@@ -16,7 +16,15 @@ TOTAL_PAGES = 6300
 
 logger = logging.getLogger(__name__)
 
-Torrent = namedtuple('Torrent', ['id', 'title', 'description', 'magnet'])
+Torrent = namedtuple('Torrent', [
+    'id',
+    'title',
+    'description',
+    'magnet',
+    'torrent_download_url',
+    'leech',
+    'seed'
+])
 RequestResult = namedtuple('RequestResult', ['soup', 'html'])
 
 
@@ -56,12 +64,17 @@ class TNTVReleases:
         title = None
         description = None
         magnet = None
+        torrent_download_url = None
+        leech = None
+        seed = None
         title_md5 = None
         # print(tr)
 
+        leech_node_found = False
         for td in tr.find_all('td'):
             # print('TD:', td)
             if td.find('a'):
+                # tutti i <td> che contengono un url
                 for a in td.find_all('a', href=True):
                     # print('A:', a)
                     if a['href'].startswith('magnet:?'):
@@ -72,14 +85,33 @@ class TNTVReleases:
                         title_md5 = hashlib.md5(magnet.encode('utf-8')).hexdigest()
                         logger.debug('title: %s', title)
                         logger.debug('title md5: %s', title_md5)
+                    elif a['href'].startswith('http://forum.tntvillage.scambioetico.org/index.php') and 'act=Attach' in a['href']:
+                        torrent_download_url = a['href']
+                        logger.debug('torrent download url: %s', torrent_download_url)
                 if td.text:
                     description = td.text
                     logger.debug('description: %s', description)
+            elif td.text and td.text.isdigit():
+                # leech o seed, prima i leech
+                if not leech_node_found:
+                    # se non abbiamo ancora trovato il <td> dei leech...
+                    leech = int(td.text)
+                    seed = int(td.find_next('td').text)  # il "next" sarebbe il <td> con i seed
+                    logger.debug('leech: %d, seed: %d', leech, seed)
+                    leech_node_found = True  # a questo punto mettiamo questo a True perchè tanto abbiamo sia leech che seed
 
         if not title or not description or not magnet:
             return None
         else:
-            return Torrent(id=title_md5, title=title, description=description, magnet=magnet)
+            return Torrent(
+                id=title_md5,
+                title=title,
+                description=description,
+                torrent_download_url=torrent_download_url,
+                leech=leech,
+                seed=seed,
+                magnet=magnet
+            )
 
     def _fetch_total_pages(self, skip_request_if_present=True):
         if skip_request_if_present and self._total_pages > 0:
@@ -144,9 +176,9 @@ class TNTVReleases:
             if torrents_to_yield:
                 if yield_with_current_datetime:
                     now = u.now(stringify=False)
-                    yield [(t.id, t.title, t.description, t.magnet, now) for t in torrents_to_yield]
+                    yield [(t.id, t.title, t.description, t.magnet, t.torrent_download_url, t.leech, t.seed, now) for t in torrents_to_yield]
                 else:
-                    yield [(t.id, t.title, t.description, t.magnet) for t in torrents_to_yield]
+                    yield [(t.id, t.title, t.description, t.magnet, t.torrent_download_url, t.leech, t.seed) for t in torrents_to_yield]
             else:
                 # se il parsing della pagina non ha dato risultati, restituire l'html
                 yield result.html

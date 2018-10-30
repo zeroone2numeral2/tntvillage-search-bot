@@ -20,8 +20,8 @@ CREATE_TABLE_PARSING_ERRORS = """CREATE TABLE IF NOT EXISTS ParsingErrors (
 INSERT_DEFAULT_GENERAL_DATA = """INSERT OR IGNORE INTO General (key, value)
 VALUES (?, ?);"""
 
-INSERT_TORRENT = """INSERT OR REPLACE INTO Torrents (id, title, description, magnet, update_datetime)
-VALUES (?, ?, ?, ?, ?);"""
+INSERT_TORRENT = """INSERT OR REPLACE INTO Torrents (id, title, description, magnet, torrent_download_url, leech, seed, update_datetime)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?);"""
 
 INSERT_PARSING_ERROR = """INSERT INTO ParsingErrors (html)
 VALUES (?);"""
