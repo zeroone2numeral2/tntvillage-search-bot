@@ -65,7 +65,7 @@ def on_search_query(bot, update, user_data):
     text = '{0}\n\n{1}'.format(
         '\n'.join(strings_list),
         BOTTOM_TEXT.format(
-            MAX_RESULT_ITEMS,
+            MAX_RESULT_ITEMS if len(torrents_list) > MAX_RESULT_ITEMS else len(torrents_list),
             len(torrents_list),
             db.total_entries,
             db.last_update
