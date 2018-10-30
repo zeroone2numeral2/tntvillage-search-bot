@@ -3,7 +3,10 @@ CREATE_TABLE_TORRENTS = """CREATE TABLE IF NOT EXISTS Torrents (
     title NVARCHAR,
     description NVARCHAR DEFAULT NULL,
     magnet NVARCHAR,
-    update_datetime TIMESTAMP DEFAULT NULL
+    update_datetime TIMESTAMP DEFAULT NULL,
+    torrent_download_url NVARCHAR DEFAULT NULL,
+    leech INT DEFAULT NULL,
+    seed INT DEFAULT NULL
 );"""
 
 CREATE_TABLE_GENERAL = """CREATE TABLE IF NOT EXISTS General (
