@@ -42,7 +42,8 @@ FROM Torrents;"""
 
 SELECT_TORRENT = """SELECT *
 FROM Torrents
-WHERE {} LIKE ?;"""
+WHERE {} LIKE ?
+ORDER BY seed DESC, leech DESC;"""
 
 UPDATE_QUERIES_COUNT = """UPDATE General
 SET value = value + {}

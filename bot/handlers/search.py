@@ -17,7 +17,9 @@ TORRENT_ROW = """- {title} [{leech}/{seed}]\
 [<a href="https://t.me/{bot_username}?start={id}">magnet</a>][<a href="{torrent_url}">torrent</a>]"""
 
 BOTTOM_TEXT = """<i>{0} risultati di {1}</i>
-I numeri tra parentesi accanto al titolo del torrent corrispondono a leech/seed
+I numeri tra parentesi accanto al titolo del torrent corrispondono a leech/seed, \
+se non presenti significa che non è stato possibile recuperare il dato. \
+Il link al torrent è presente solo se è stato recuperato quando il record fu aggiunto
 <b>Torrent nel database</b>: {2:,}
 <b>Ultimo aggiornamento lista</b>: {3}"""
 
